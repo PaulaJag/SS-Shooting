@@ -8,7 +8,7 @@ public class PlayerAttack : MonoBehaviour
 
     public float fireRate = 15f;
     private float nextTimeToFire;
-    public float damage = 20f;
+    public float damage = 10f;
 
     private Animator zoomCameraAnimation;
     private bool zoomed;
@@ -120,7 +120,10 @@ public class PlayerAttack : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out hit))
         {
-            
+            if (hit.transform.tag == Tags.EnemyTag)
+            {
+                hit.transform.GetComponent<HealthScript>().ApplyDamage(damage);
+            }
         }
     }
 }
