@@ -19,6 +19,9 @@ public class HealthScript : MonoBehaviour
 
     public PlayerStats playerStats;
 
+    public PlayerStats killStats;
+    public int kills = 0;
+
     void Awake()
     {
         if (isEnemy)
@@ -29,6 +32,7 @@ public class HealthScript : MonoBehaviour
 
             // Get enemy audio
             enemyAudio = GetComponentInChildren<EnemyAudio>();
+            killStats = GetComponent<PlayerStats>();
         }
 
         if (isPlayer)
@@ -90,7 +94,7 @@ public class HealthScript : MonoBehaviour
         {
             GetComponent<Animator>().enabled = false;
             GetComponent<BoxCollider>().isTrigger = false;
-            GetComponent<Rigidbody>().AddTorque(-transform.forward * 3f);
+            GetComponent<Rigidbody>().AddTorque(-transform.forward * 1f);
 
             enemyController.enabled = false;
             navAgent.enabled = false;
@@ -100,6 +104,11 @@ public class HealthScript : MonoBehaviour
 
             // Enemy manager
             EnemyManager.instance.EnemyDied(true);
+
+            // Increase the kills and display in player stats
+            kills++;
+            print("Kills: " + kills);
+            killStats.DisplayKills(kills);
         }
 
         if (isPlayer)

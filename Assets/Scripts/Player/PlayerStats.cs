@@ -7,6 +7,8 @@ public class PlayerStats : MonoBehaviour
 {
     [SerializeField] private Image healthStats, staminaStats;
 
+    [SerializeField] private Text killStats;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,5 +33,10 @@ public class PlayerStats : MonoBehaviour
         staminaValue /= 100f;
 
         staminaStats.fillAmount = staminaValue;
+    }
+
+    public void DisplayKills(int kills)
+    {
+        killStats.text = kills.ToString();
     }
 }
