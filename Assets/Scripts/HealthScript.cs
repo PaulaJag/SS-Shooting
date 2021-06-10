@@ -108,7 +108,7 @@ public class HealthScript : MonoBehaviour
             // Increase the kills and display in player stats
             kills++;
             print("Kills: " + kills);
-            killStats.DisplayKills(kills);
+            // killStats.DisplayKills(kills);
         }
 
         if (isPlayer)
