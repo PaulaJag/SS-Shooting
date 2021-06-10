@@ -17,6 +17,8 @@ public class HealthScript : MonoBehaviour
 
     private EnemyAudio enemyAudio;
 
+    public PlayerStats playerStats;
+
     void Awake()
     {
         if (isEnemy)
@@ -32,7 +34,7 @@ public class HealthScript : MonoBehaviour
         if (isPlayer)
         {
             // Get player stats
-
+            playerStats = GetComponent<PlayerStats>();
         }
     }
 
@@ -61,7 +63,7 @@ public class HealthScript : MonoBehaviour
         if (isPlayer)
         {
             // show the stats
-            
+            playerStats.DisplayHealthStats(health);
         }
 
         if (isEnemy)
@@ -95,7 +97,9 @@ public class HealthScript : MonoBehaviour
             enemyAnim.enabled = false;
 
             StartCoroutine(DeadSound());
-            /// EnemyManager
+
+            // Enemy manager
+            EnemyManager.instance.EnemyDied(true);
         }
 
         if (isPlayer)
@@ -107,7 +111,8 @@ public class HealthScript : MonoBehaviour
                 enemies[i].GetComponent<EnemyController>().enabled = false;
             }
 
-            /// Call enemy man
+            // Call enemy manager
+            EnemyManager.instance.StopSpawning();
             
             GetComponent<PlayerMovement>().enabled = false;
             GetComponent<PlayerAttack>().enabled = false;

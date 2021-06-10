@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AttackScript : MonoBehaviour
 {
-    public float damage = 2f;
+    public float damage = 10f;
     public float radius = 1f;
     public LayerMask layerMask;
 
@@ -21,10 +21,13 @@ public class AttackScript : MonoBehaviour
 
         if (hits.Length > 0)
         {
+            // If -> Printing out hit events (for debugging purposes)
             print("We touched: " + hits[0].gameObject.tag);
 
+            // If -> Apply damage upon hit
             hits[0].gameObject.GetComponent<HealthScript>().ApplyDamage(damage);
 
+            // If -> Deactive the bullet
             gameObject.SetActive(false);
         }
     }

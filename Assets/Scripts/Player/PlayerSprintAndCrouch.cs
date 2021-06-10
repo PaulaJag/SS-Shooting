@@ -6,7 +6,7 @@ public class PlayerSprintAndCrouch : MonoBehaviour
 {
     private PlayerMovement playerMovement;
 
-    public float springSpeed = 10f;
+    public float sprintSpeed = 10f;
     public float moveSpeed = 5f;
     public float crouchSpeed = 2f;
 
@@ -27,6 +27,10 @@ public class PlayerSprintAndCrouch : MonoBehaviour
     private float crouchVolume = 0.1f;
     private float walkVolumeMin = 0.2f, walkVolumeMax = 0.6f;
 
+    private PlayerStats playerStats;
+
+    private float sprintValue = 100f;
+    private float sprintTreshold = 10f;
 
     void Awake()
     {
@@ -37,6 +41,8 @@ public class PlayerSprintAndCrouch : MonoBehaviour
 
         // Get player footsteps
         playerFootsteps = GetComponentInChildren<PlayerFootsteps>();
+
+        playerStats = GetComponent<PlayerStats>();
     }
 
     // Start is called before the first frame update
@@ -59,17 +65,22 @@ public class PlayerSprintAndCrouch : MonoBehaviour
     // Sprinting
     void Sprint()
     {
-        // If we press left shift while not crouching
-        if(Input.GetKeyDown(KeyCode.LeftShift) && !isCrouching)
+        // If we have stamina, we can sprint
+        if (sprintValue > 0f)
         {
-            // If -> Apply sprint
-            playerMovement.speed = springSpeed;
+            // If -> If we press left shift while not crouching
+            if (Input.GetKeyDown(KeyCode.LeftShift) && !isCrouching)
+            {
+                // If -> If -> Apply sprint
+                playerMovement.speed = sprintSpeed;
 
-            // If -> Set step distance to sprint step distance - Set volume min and max to sprint volume min and max
-            playerFootsteps.stepDistance = sprintStepDistance;
-            playerFootsteps.volumeMin = sprintVolume;
-            playerFootsteps.volumeMax = sprintVolume;
+                // If -> If -> Set step distance to sprint step distance - Set volume min and max to sprint volume min and max
+                playerFootsteps.stepDistance = sprintStepDistance;
+                playerFootsteps.volumeMin = sprintVolume;
+                playerFootsteps.volumeMax = sprintVolume;
+            }
         }
+
         // If we release left shift while not crouching
         if(Input.GetKeyUp(KeyCode.LeftShift) && !isCrouching)
         {
@@ -80,6 +91,39 @@ public class PlayerSprintAndCrouch : MonoBehaviour
             playerFootsteps.stepDistance = walkStepDistance;
             playerFootsteps.volumeMin = walkVolumeMin;
             playerFootsteps.volumeMax = walkVolumeMax;
+        }
+
+        if (Input.GetKey(KeyCode.LeftShift) && !isCrouching)
+        {
+            sprintValue -= sprintTreshold * Time.deltaTime;
+
+            // If -> If sprint value is less than or is 0
+            if (sprintValue <= 0f)
+            {
+                sprintValue = 0f;
+
+                // If -> If -> Reset player speed and volume
+                playerMovement.speed = moveSpeed;
+                playerFootsteps.stepDistance = walkStepDistance;
+                playerFootsteps.volumeMin = walkVolumeMin;
+                playerFootsteps.volumeMax = walkVolumeMax;
+            }
+
+            playerStats.DisplayStaminaStats(sprintValue);
+        }
+        else
+        {
+            if (sprintValue != 100f)
+            {
+                sprintValue += (sprintTreshold / 2f) * Time.deltaTime;
+
+                playerStats.DisplayStaminaStats(sprintValue);
+
+                if (sprintValue > 100)
+                {
+                    sprintValue = 100f;
+                }
+            }
         }
     }
     
